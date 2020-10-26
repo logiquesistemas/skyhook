@@ -28,7 +28,7 @@ class VSTS extends BaseProvider {
     public async gitPush() {
         const author = new EmbedAuthor()
         author.name = this.body.resource.pushedBy.displayName
-        author.iconUrl = this.body.resource.pushedBy.imageUrl
+        author.icon_url = this.body.resource.pushedBy.imageUrl
         const fields: EmbedField[] = []
         this.body.resource.commits.forEach((commit: any) => {
             const field = new EmbedField()
@@ -152,13 +152,17 @@ class VSTS extends BaseProvider {
     // Because carpal tunnel...
     private addMinimalMessage() {
         this.embed.title = this.body.message.markdown
+		
+		if (this.embed.title.length > 256)
+			this.embed.title = this.body.resource.title ?? this.body.message.markdown.substring(0, 256);
+		
         this.addEmbed(this.embed)
     }
 
     private extractCreatedByAuthor(): EmbedAuthor {
         const author = new EmbedAuthor()
         author.name = this.body.resource.createdBy.displayName
-        author.iconUrl = this.body.resource.createdBy.imageUrl
+        author.icon_url = this.body.resource.createdBy.imageUrl
         return author
     }
 }

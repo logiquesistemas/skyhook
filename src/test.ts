@@ -6,16 +6,14 @@ require('dotenv').config()
 import axios from 'axios'
 import * as fs from 'fs'
 import { DiscordPayload } from './model/DiscordPayload'
-import { AppVeyor } from './provider/Appveyor'
 import { BaseProvider } from './provider/BaseProvider'
 import { Heroku } from './provider/Heroku'
-import { NewRelic } from './provider/NewRelic'
 import { ErrorUtil } from './util/ErrorUtil'
 
-testPayloadVisual(new Heroku(), 'heroku.json')
+testPayloadVisual(new Heroku(), 'heroku', 'heroku.json')
 
-function testPayloadVisual(provider: BaseProvider, jsonFileName: string) {
-    const json = fs.readFileSync(`./test/${jsonFileName}`, 'utf-8')
+function testPayloadVisual(provider: BaseProvider, providerName: string, jsonFileName: string) {
+    const json = fs.readFileSync(`./test/${providerName}/${jsonFileName}`, 'utf-8')
     provider.parse(JSON.parse(json)).then((discordPayload) => {
         sendPayload(discordPayload)
     }).catch((err) => {
@@ -32,6 +30,7 @@ function sendPayload(discordPayload: DiscordPayload) {
         return
     }
     const jsonString = JSON.stringify(discordPayload)
+    console.log(`Sending payload to ${discordEndpoint}`)
     axios({
         data: jsonString,
         method: 'post',
@@ -39,6 +38,6 @@ function sendPayload(discordPayload: DiscordPayload) {
     }).then(() => {
         console.log('Sent')
     }).catch((err: any) => {
-        console.log(err)
+        console.log("Error sending to discord")
     })
 }
