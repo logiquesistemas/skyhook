@@ -78,18 +78,18 @@ providerNames.sort()
 
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
-app.use(express.static('public'))
+app.use('/skyhook',express.static('public'))
 app.set('view engine', 'ejs')
 
-app.get('/', (req, res) => {
+app.get('/skyhook', (req, res) => {
     res.render('index', { providers: providerInfos })
 })
 
-app.get('/providers', (req, res) => {
+app.get('/skyhook/providers', (req, res) => {
     res.status(200).send(providerNames)
 })
 
-app.get('/api/webhooks/:webhookID/:webhookSecret/:from', (req, res) => {
+app.get('/skyhook/api/webhooks/:webhookID/:webhookSecret/:from', (req, res) => {
     // Return 200 if the provider is valid to show this url is ready.
     const provider: any = req.params.from
     if (provider == null || providersMap.get(provider) == null) {
@@ -101,7 +101,7 @@ app.get('/api/webhooks/:webhookID/:webhookSecret/:from', (req, res) => {
     }
 })
 
-app.post('/api/webhooks/:webhookID/:webhookSecret/:from', async (req, res) => {
+app.post('/skyhook/api/webhooks/:webhookID/:webhookSecret/:from', async (req, res) => {
     const webhookID = req.params.webhookID
     const webhookSecret = req.params.webhookSecret
     const providerName = req.params.from
